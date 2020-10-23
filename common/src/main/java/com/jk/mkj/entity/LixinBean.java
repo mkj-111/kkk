@@ -7,4 +7,5 @@ public class LixinBean {
 
     private String userName;
 
+    private String orderName;
 }
