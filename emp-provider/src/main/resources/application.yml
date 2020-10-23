@@ -1,0 +1,22 @@
+server:
+  port: 8767
+spring:
+  application:
+    name: empprovider
+  datasource:
+    data-username: com.jk.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/2004?useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&serverTimezone=GMT%2B8
+    username: root
+    password:
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/*.xml
+  type-aliases-package: com.jk.mkj.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mkj.dao.EmployeeBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.mkj.entity.EmployeeBean" >
+    <id column="employee_id" property="employeeId" jdbcType="INTEGER" />
+    <result column="employee_name" property="employeeName" jdbcType="VARCHAR" />
+    <result column="employee_temp" property="employeeTemp" jdbcType="INTEGER" />
+    <result column="sdate" property="sdate" jdbcType="DATE" />
+    <result column="employee_job" property="employeeJob" jdbcType="INTEGER" />
+    <result column="employee_info" property="employeeInfo" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    employee_id, employee_name, employee_temp, sdate, employee_job, employee_info
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_employee
+    where employee_id = #{employeeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_employee
+    where employee_id = #{employeeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jk.mkj.entity.EmployeeBean" >
+    insert into t_employee (employee_id, employee_name, employee_temp, 
+      sdate, employee_job, employee_info
+      )
+    values (#{employeeId,jdbcType=INTEGER}, #{employeeName,jdbcType=VARCHAR}, #{employeeTemp,jdbcType=INTEGER}, 
+      #{sdate,jdbcType=DATE}, #{employeeJob,jdbcType=INTEGER}, #{employeeInfo,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.jk.mkj.entity.EmployeeBean" >
+    insert into t_employee
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="employeeId != null" >
+        employee_id,
+      </if>
+      <if test="employeeName != null" >
+        employee_name,
+      </if>
+      <if test="employeeTemp != null" >
+        employee_temp,
+      </if>
+      <if test="sdate != null" >
+        sdate,
+      </if>
+      <if test="employeeJob != null" >
+        employee_job,
+      </if>
+      <if test="employeeInfo != null" >
+        employee_info,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="employeeId != null" >
+        #{employeeId,jdbcType=INTEGER},
+      </if>
+      <if test="employeeName != null" >
+        #{employeeName,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeTemp != null" >
+        #{employeeTemp,jdbcType=INTEGER},
+      </if>
+      <if test="sdate != null" >
+        #{sdate,jdbcType=DATE},
+      </if>
+      <if test="employeeJob != null" >
+        #{employeeJob,jdbcType=INTEGER},
+      </if>
+      <if test="employeeInfo != null" >
+        #{employeeInfo,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jk.mkj.entity.EmployeeBean" >
+    update t_employee
+    <set >
+      <if test="employeeName != null" >
+        employee_name = #{employeeName,jdbcType=VARCHAR},
+      </if>
+      <if test="employeeTemp != null" >
+        employee_temp = #{employeeTemp,jdbcType=INTEGER},
+      </if>
+      <if test="sdate != null" >
+        sdate = #{sdate,jdbcType=DATE},
+      </if>
+      <if test="employeeJob != null" >
+        employee_job = #{employeeJob,jdbcType=INTEGER},
+      </if>
+      <if test="employeeInfo != null" >
+        employee_info = #{employeeInfo,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where employee_id = #{employeeId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.jk.mkj.entity.EmployeeBean" >
+    update t_employee
+    set employee_name = #{employeeName,jdbcType=VARCHAR},
+      employee_temp = #{employeeTemp,jdbcType=INTEGER},
+      sdate = #{sdate,jdbcType=DATE},
+      employee_job = #{employeeJob,jdbcType=INTEGER},
+      employee_info = #{employeeInfo,jdbcType=VARCHAR}
+    where employee_id = #{employeeId,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>淦用户管理页面</title>
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/js/bootstrap/css/bootstrap-datetimepicker.min.css">
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/js/bootstrap-table.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/js/bootstrap-table-zh-CN.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript" src="/js/bootstrap/js/bootstrap-datetimepicker.zh-CN.js"></script>
+</head>
+<body>
+<div id="tool">
+    <button type="button" id="btn_add" class="btn btn-primary">新增</button>
+</div>
+        <table id="tt"></table>
+        <!--新增表格-->
+        <form method="post"  id="myform">
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            <input type="hidden" id="employeeId" name="employeeId">
+                            <div class="form-group" style="width:30%">
+                                <label for="txt_departmentname">员工姓名</label>
+                                <input type="text" name="employeeName" class="form-control input-lg" id="employeeName" >
+                            </div>
+                            <div class="form-group" style="width:30%">
+                                <label for="txt_parentdepartment">部门</label>
+                                <select id="employeeTemp"  class="form-control" name="employeeTemp">
+                                    <option value="-1">请选择</option>
+                                    <option value="1">财务</option>
+                                    <option value="2">公关</option>
+                                    <option value="3">人事</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="width:30%">
+                                <label for="txt_parentdepartment">岗位</label>
+                                <select id="employeeJob"  class="form-control" name="employeeJob">
+                                    <option value="-1">请选择</option>
+                                    <option value="1">主管</option>
+                                    <option value="2">员工</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="width:30%">
+                                <label for="txt_parentdepartment">职责</label>
+                                <textarea id="employeeInfo" name="employeeInfo" class="form-control"></textarea>
+                            </div>
+                            <div class="form-group" style="width:30%">
+                                <label for="txt_parentdepartment">入职日期</label>
+                                <input type="date" class="form-control" name="sdate" id="sdate">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span>关闭</button>
+                            <button type="button" id="btn_submit" onclick="add()" class="btn btn-primary" data-dismiss="modal"><span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>保存</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+
+</body>
+<script type="text/javascript" th:inline="none">
+
+    $(function(){
+        table()
+        date()
+    })
+
+    /*条查*/
+    function sou(){
+        $("#tt").bootstrapTable("refresh")
+    }
+    //回显
+    function hui(id){
+        $.ajax({
+            url:"/emp/hui",
+            type:"post",
+            data:{id:id},
+            success:function(data){
+                var aa =data;
+                $("#employeeId").val(aa.employeeId);
+                $("#employeeName").val(aa.employeeName);
+                $("#employeeTemp").val(aa.employeeTemp);
+                $("#sdate").val(aa.sdate);
+                $("#employeeJob").val(aa.employeeJob);
+                $("#employeeInfo").val(aa.employeeInfo);
+
+                $('#myModal').modal();
+            }
+        })
+    }
+
+    /*打开新增*/
+    $("#btn_add").click(function () {
+        $("#myModalLabel").text("新增");
+        $('#myModal').modal();
+    });
+    //新增
+    function add(){
+        $.ajax({
+            url:'/emp/save',
+            type:'post',
+            data:$("#myform").serialize(),
+            success:function(){
+                alert("保存成功")
+                $('#myModal').modal('hide');
+                sou()
+            }
+        })
+    }
+
+    /*删除*/
+    function shan(id){
+        $.ajax({
+            url:"/emp/deleteemp",
+            type:"post",
+            data:{id:id},
+            success:function(){
+                alert("删除成功")
+                sou()
+            }
+        })
+    }
+
+    //查询所有
+    function table(){
+        $("#tt").bootstrapTable({
+            url:"/emp/select",
+            showRefresh : true,//刷新按钮
+            toolbar:"#tool",
+            pagination:true,
+            pageSize : 5,//单页记录数
+            pageList : [ 5, 10, 20],//可选择单页记录数
+            columns:[[
+                {checkbox:true},
+                {field:"employeeId",title:"员工ID",align:"center",width:100},
+                {field:"employeeName",title:"员工名称",align:"center",width:100},
+                {field:"empname",title:"部门",align:"center",width:100},
+                {field:"sdate",title:"入职日期",align:"center",width:100},
+                {field:"employeeJob",title:"岗位",align:"center",width:100,formatter:function(value,row,index){
+                    if(value==1){
+                        return "主管";
+                    }else{
+                        return "员工";
+                    }
+
+                    }},
+                {field:"employeeInfo",title:"职责",align:"center",width:100},
+                {field:"cao",title:"操作",align:"center",width:100,formatter:function(value,row,index){
+                        var str="";
+                        str+='<button type="button" onclick=hui('+row.employeeId+') class="btn btn-primary"  >修改</button>';
+
+                        str+='<button type="button" onclick=shan('+row.employeeId+') class="btn btn-danger"  >删除</button>';
+                        return str;
+                    }},
+            ]],
+            pagination:true
+
+
+        })
+    }
+    function date(){
+        $('.date').datetimepicker({
+            language: 'zh-CN',//显示中文
+            format: 'yyyy-mm-dd hh:ii:ss',//显示格式
+            minView: "month",//设置只显示到月份
+            initialDate: new Date(),//初始化当前日期
+            autoclose: true,//选中自动关闭
+            todayBtn: true//显示今日按钮
+        });
+    }
+</script>
+</html>

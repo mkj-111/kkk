@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jk.mkj.dao.EmployeeBeanMapper" >
+  <resultMap id="BaseResultMap" type="com.jk.mkj.entity.EmployeeBean" >
+    <id column="employee_id" property="employeeId" jdbcType="INTEGER" />
+    <result column="employee_name" property="employeeName" jdbcType="VARCHAR" />
+    <result column="employee_temp" property="employeeTemp" jdbcType="INTEGER" />
+    <result column="sdate" property="sdate" jdbcType="DATE" />
+    <result column="employee_job" property="employeeJob" jdbcType="INTEGER" />
+    <result column="employee_info" property="employeeInfo" jdbcType="VARCHAR" />
+    <result column="empname" property="empname" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="select" resultMap="BaseResultMap">
+                SELECT
+            t_employee.employee_id,
+            t_employee.employee_name,
+            t_employee.sdate,
+            t_employee.employee_job,
+            t_employee.employee_info,
+            t_temp.temp_name AS empname,
+            t_employee.employee_temp
+            FROM
+            t_employee ,
+            t_temp
+            WHERE
+            t_employee.employee_temp = t_temp.temp_id
+  </select>
+
+  <sql id="Base_Column_List" >
+    employee_id, employee_name, employee_temp, sdate, employee_job, employee_info
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_employee
+    where employee_id = #{employeeId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_employee
+    where employee_id = #{employeeId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jk.mkj.entity.EmployeeBean" >
+    insert into t_employee (employee_id, employee_name, employee_temp, 
+      sdate, employee_job, employee_info
+      )
+    values (null , #{employeeName,jdbcType=VARCHAR}, #{employeeTemp,jdbcType=INTEGER},
+      #{sdate,jdbcType=DATE}, #{employeeJob,jdbcType=INTEGER}, #{employeeInfo,jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <update id="updateByPrimaryKey" parameterType="com.jk.mkj.entity.EmployeeBean" >
+    update t_employee
+    set employee_name = #{employeeName,jdbcType=VARCHAR},
+      employee_temp = #{employeeTemp,jdbcType=INTEGER},
+      sdate = #{sdate,jdbcType=DATE},
+      employee_job = #{employeeJob,jdbcType=INTEGER},
+      employee_info = #{employeeInfo,jdbcType=VARCHAR}
+    where employee_id = #{employeeId,jdbcType=INTEGER}
+  </update>
+</mapper>
