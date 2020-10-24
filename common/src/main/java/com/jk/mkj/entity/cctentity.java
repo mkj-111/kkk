@@ -13,4 +13,6 @@ public class cctentity {
 
     private  String name;
 
+    private String password;
+
 }
